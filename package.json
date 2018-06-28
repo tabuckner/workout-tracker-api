@@ -6,7 +6,8 @@
   "scripts": {
     "ts": "tsc -w",
     "server": "nodemon ./build/index.js",
-    "start": "tsc && node ./build/index.js"
+    "start": "tsc && node ./build/index.js",
+    "start:dev": "concurrently -p name -n \"TSC,NODE\" -c \"blue,green\" \"yarn ts\" \"yarn server\""
   },
   "dependencies": {
     "body-parser": "^1.18.3",
@@ -22,6 +23,7 @@
     "@types/express": "^4.16.0",
     "@types/mongoose": "^5.0.18",
     "@types/node": "^10.3.6",
+    "concurrently": "^3.6.0",
     "nodemon": "^1.17.5",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2"
