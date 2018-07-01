@@ -11,6 +11,7 @@ import * as cors from 'cors';
  */
 import ExerciseRouter from './controllers/ExerciseController';
 import RoutineRouter from './controllers/RoutineController';
+import UserController from './controllers/UserController';
 
 class Server {
 
@@ -22,9 +23,10 @@ class Server {
     this.routes();
   }
 
-  public config() {
+  public config() { // TODO: Set real secrets and secure.
     const MONGO_PW = 'developmentpassword' || process.env.MONGO_PW;
-    const MONGO_URI = `mongodb+srv://tabuckner:${MONGO_PW}@development-w7lz5.mongodb.net/test?retryWrites=true`;
+    // const MONGO_URI = `mongodb+srv://tabuckner:${MONGO_PW}@development-w7lz5.mongodb.net/test?retryWrites=true`;
+    const MONGO_URI = `mongodb+srv://tabuckner:${MONGO_PW}@development-w7lz5.mongodb.net/test`;
     mongoose.connect(MONGO_URI || process.env.MONGODB_URI);
 
     this.app.use(bodyParser.json());
@@ -42,6 +44,7 @@ class Server {
     this.app.use('/', router);
     this.app.use('/api/exercises', ExerciseRouter);
     this.app.use('/api/routines', RoutineRouter);
+    this.app.use('/api/users', UserController);
   }
 
 }

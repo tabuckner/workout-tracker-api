@@ -6,6 +6,10 @@ Simple RESTful API for the Workout Tracker project.
 
 Currently only a few routes, can be ran via Yarn/NPM or Docker. Data is hosted remotely, no need to worry about volumes or data persistence yet.
 
+### NOTICE
+
+Certain routes will now return a 'not authorized' error if you do not include a valid JWT token in an Authorization Header, (e.g. Bearer <JWT-Token>)
+
 ## Getting Started
 
 ### Dependencies

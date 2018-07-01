@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import Routine from '../models/Routine';
 import { INewRoutine } from '../models/interfaces/NewRoutineInterface';
+import { IRequestAuth, checkAuth } from '../middleware/check-auth';
 
 class RoutineRouter {
 
@@ -62,10 +63,12 @@ class RoutineRouter {
     });
   }
 
-  public createRoutine(req: Request, res: Response, next: NextFunction): void {
+  public createRoutine(req: IRequestAuth, res: Response, next: NextFunction): void {
+    const requestor = req.userData.userId;
     const newRoutine: INewRoutine = {
       name: req.body.name,
-      exercises: req.body.exercises
+      exercises: req.body.exercises,
+      creator: requestor
     };
 
     const routine = new Routine(newRoutine);
@@ -89,9 +92,10 @@ class RoutineRouter {
     });
   }
 
-  public updateRoutine(req: Request, res: Response, next: NextFunction): void {
+  public updateRoutine(req: IRequestAuth, res: Response, next: NextFunction): void {
     const id = req.params.id;
-    Routine.findOneAndUpdate({ _id: id }, req.body)
+    const requestor = req.userData.userId
+    Routine.findOneAndUpdate({ _id: id, creator: requestor }, req.body)
     .then((data) => {
       let status = res.statusCode;
       if (!data) {
@@ -149,10 +153,10 @@ class RoutineRouter {
 
   public routes() {
     this.router.get('/', this.getRoutines);
-    this.router.post('/', this.createRoutine);
+    this.router.post('/', checkAuth, this.createRoutine);
     this.router.get('/:id', this.getRoutine);
-    this.router.put('/:id', this.updateRoutine);
-    this.router.delete('/:id', this.deleteRoutine);
+    this.router.put('/:id', checkAuth, this.updateRoutine);
+    this.router.delete('/:id', checkAuth, this.deleteRoutine);
   }
 
 }

@@ -9,6 +9,7 @@ const port = normalizePort(process.env.PORT || 3000);
 Server.set('port', port);
 
 console.log(`Server listening on port ${port}`);
+console.log(process.env.JWT_KEY);
 
 const server = http.createServer(Server);
 server.listen(port);

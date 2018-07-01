@@ -3,4 +3,5 @@ export interface INewExercise {
   sets: number;
   reps: number;
   weight: number;
+  creator: string;
 }
