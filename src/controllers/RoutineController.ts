@@ -13,7 +13,7 @@ class RoutineRouter {
   }
 
   public getRoutines(req: Request, res: Response, next: NextFunction): void {
-    Routine.find({})
+    Routine.find({}).populate('exercises') // TODO: Test speed here...
     .then((data) => {
       const status = res.statusCode;
       const count = data.length;
