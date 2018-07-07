@@ -1,9 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 
-interface IDecodedToken {
+export interface IDecodedToken {
   email: string;
   userId: string;
+}
+
+export interface IDecodedRefreshToken {
+  email: string;
+  key: string;
 }
 
 export interface IRequestAuth extends Request {

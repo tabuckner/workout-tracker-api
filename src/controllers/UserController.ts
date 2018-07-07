@@ -1,8 +1,13 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import * as crs from 'crypto-random-string';
 import User from '../models/User';
 import { INewUser } from '../models/interfaces/NewUserInterface';
+import { IDecodedToken, IDecodedRefreshToken } from '../middleware/check-auth';
+
+const JWT_SECRET = crs(15);
+const tokenList = {};
 
 class UserRouter {
 
@@ -102,7 +107,7 @@ class UserRouter {
       .then((user) => {
         if (!user) {
           return res.status(401).json({
-            message: 'Auth Failed 1',
+            message: 'Auth Failed',
             status: res.status
           });
         }
@@ -112,7 +117,7 @@ class UserRouter {
       .then(result => {
         if (!result) {
           return res.status(401).json({
-            message: 'Auth Failed 2',
+            message: 'Auth Failed',
             status: res.status
           });
         }
@@ -121,21 +126,74 @@ class UserRouter {
           userId: fetchedUser._id // Are Magick Dusts
         },
           process.env.JWT_KEY, {
-            expiresIn: '1h'
-          })
-        res.status(200).json({
+            expiresIn: '30m'
+          });
+        const hashedKey = bcrypt.hashSync(JWT_SECRET, 10);
+        const refreshToken = jwt.sign({
+          userId: fetchedUser._id,
+          key: hashedKey
+        },
+          process.env.JWT_REFRESH_KEY, {
+            expiresIn: '7d' // Max time before a user must fully re-auth.
+          });
+        const response = {
           message: 'Auth successful.',
           token: token,
-          expiresIn: 3600,
+          refreshToken: refreshToken,
+          expiresIn: 1800,
           userId: fetchedUser._id
-        })
+        };
+        tokenList[refreshToken] = response;
+        res.status(200).json(response)
       })
       .catch(err => {
         return res.status(401).json({
-          message: 'Auth Failed 3.',
+          message: 'Auth Failed.',
           status: res.status
         });
       });
+  }
+
+  refreshToken(req: Request, res: Response, next: NextFunction): void {
+    const reqRefreshToken = req.body.refreshToken;
+    const decodedRefreshToken = jwt.verify(reqRefreshToken, process.env.JWT_REFRESH_KEY) as IDecodedRefreshToken;
+    const originalToken = req.headers.authorization.split('Bearer ')[1];
+    const decodedOriginalToken = jwt.verify(originalToken, process.env.JWT_KEY) as IDecodedToken;
+    const reqRefreshExistsInMemory = reqRefreshToken in tokenList;
+    const secretIsValid = bcrypt.compareSync(JWT_SECRET, decodedRefreshToken.key);
+
+    if (reqRefreshToken && reqRefreshExistsInMemory && secretIsValid) {
+      const newToken = jwt.sign({
+          email: decodedOriginalToken.email,
+          userId: decodedOriginalToken.userId
+        },
+          process.env.JWT_KEY, {
+            expiresIn: '30m'
+          });
+        const newHashedKey = bcrypt.hashSync(JWT_SECRET, 10);
+        const newRefreshToken = jwt.sign({
+          userId: decodedOriginalToken.userId,
+          key: newHashedKey
+        },
+          process.env.JWT_REFRESH_KEY, {
+            expiresIn: '7d'
+          });
+        const response = {
+          message: 'Session Tokens successfully refreshed.',
+          token: newToken,
+          refreshToken: newRefreshToken,
+          expiresIn: 1800,
+          userId: decodedOriginalToken.userId
+        };
+        delete tokenList[reqRefreshToken];
+        tokenList[newRefreshToken] = response;
+        res.status(200).json(response)
+    } else {
+      res.status(401).json({
+        message: 'Auth failed.',
+        status: res.status
+      });
+    }
   }
 
   public routes() {
@@ -143,6 +201,7 @@ class UserRouter {
     this.router.delete('/', this.deleteUser);
     this.router.post('/signup', this.createUser);
     this.router.post('/login', this.authenticateUser);
+    this.router.post('/refresh', this.refreshToken);
   }
 
 }

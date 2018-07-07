@@ -48,6 +48,7 @@ typings/
 
 # dotenv environment variables file
 .env
+.env.list
 
 # nodemon environment variables
 nodemon.json
