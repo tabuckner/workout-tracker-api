@@ -126,7 +126,8 @@ class UserRouter {
           userId: fetchedUser._id // Are Magick Dusts
         },
           process.env.JWT_KEY, {
-            expiresIn: '30m'
+            // expiresIn: '30m'
+            expiresIn: '10s'
           });
         const hashedKey = bcrypt.hashSync(JWT_SECRET, 10);
         const refreshToken = jwt.sign({
@@ -140,7 +141,8 @@ class UserRouter {
           message: 'Auth successful.',
           token: token,
           refreshToken: refreshToken,
-          expiresIn: 1800,
+          // expiresIn: 1800,
+          expiresIn: 10,
           userId: fetchedUser._id
         };
         tokenList[refreshToken] = response;
@@ -155,10 +157,13 @@ class UserRouter {
   }
 
   refreshToken(req: Request, res: Response, next: NextFunction): void {
+    console.log(req.body);
+    console.log(req.headers.authorization);
+
     const reqRefreshToken = req.body.refreshToken;
     const decodedRefreshToken = jwt.verify(reqRefreshToken, process.env.JWT_REFRESH_KEY) as IDecodedRefreshToken;
     const originalToken = req.headers.authorization.split('Bearer ')[1];
-    const decodedOriginalToken = jwt.verify(originalToken, process.env.JWT_KEY) as IDecodedToken;
+    const decodedOriginalToken = jwt.decode(originalToken) as IDecodedToken;
     const reqRefreshExistsInMemory = reqRefreshToken in tokenList;
     const secretIsValid = bcrypt.compareSync(JWT_SECRET, decodedRefreshToken.key);
 
@@ -168,7 +173,8 @@ class UserRouter {
           userId: decodedOriginalToken.userId
         },
           process.env.JWT_KEY, {
-            expiresIn: '30m'
+            // expiresIn: '30m'
+            expiresIn: '10s'
           });
         const newHashedKey = bcrypt.hashSync(JWT_SECRET, 10);
         const newRefreshToken = jwt.sign({
@@ -182,7 +188,8 @@ class UserRouter {
           message: 'Session Tokens successfully refreshed.',
           token: newToken,
           refreshToken: newRefreshToken,
-          expiresIn: 1800,
+          // expiresIn: 1800,
+          expiresIn: 10,
           userId: decodedOriginalToken.userId
         };
         delete tokenList[reqRefreshToken];

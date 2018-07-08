@@ -8,6 +8,7 @@ export interface IDecodedToken {
 
 export interface IDecodedRefreshToken {
   email: string;
+  userId: string
   key: string;
 }
 
