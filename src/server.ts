@@ -9,9 +9,10 @@ import * as cors from 'cors';
 /**
  * Controllers/Routers
  */
-import ExerciseRouter from './controllers/ExerciseController';
-import RoutineRouter from './controllers/RoutineController';
+import ExerciseController from './controllers/ExerciseController';
+import RoutineController from './controllers/RoutineController';
 import UserController from './controllers/UserController';
+import JournalEntryController from './controllers/JournalEntryController';
 
 class Server {
 
@@ -42,8 +43,9 @@ class Server {
     router = express.Router();
 
     this.app.use('/', router);
-    this.app.use('/api/exercises', ExerciseRouter);
-    this.app.use('/api/routines', RoutineRouter);
+    this.app.use('/api/exercises', ExerciseController);
+    this.app.use('/api/routines', RoutineController);
+    this.app.use('/api/journal', JournalEntryController);
     this.app.use('/api/users', UserController);
   }
 

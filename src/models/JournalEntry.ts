@@ -1,10 +1,11 @@
-import { Schema, model} from 'mongoose';
+import * as mongoose from 'mongoose';
+const deepPopulate = require('mongoose-deep-populate')(mongoose);
 
-let journalEntrySchema: Schema = new Schema({
-  baseRoutine: { type: Schema.Types.ObjectId, ref: 'Routine', required: true },
-  exercisePerformance: [
+let journalEntrySchema: mongoose.Schema = new mongoose.Schema({
+  baseRoutine: { type: mongoose.Schema.Types.ObjectId, ref: 'Routine', required: true },
+  exercisePerformances: [
     {
-      exercise: { type: Schema.Types.ObjectId, ref: 'Exercise' },
+      exercise: { type: mongoose.Schema.Types.ObjectId, ref: 'Exercise' },
       performance: {
         sets: { type: Number, required: true },
         reps: { type: Number, required: true },
@@ -12,7 +13,8 @@ let journalEntrySchema: Schema = new Schema({
       }
     }
   ],
-  creator: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+  creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
+journalEntrySchema.plugin(deepPopulate);
 
-export default model('Routine', journalEntrySchema);
+export default mongoose.model('JournalEntry', journalEntrySchema);
