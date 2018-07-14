@@ -16,6 +16,8 @@ class JournalEntryRouter {
 
   public getJournalEntries(req: Request, res: Response, next: NextFunction): void {
     JournalEntry.find({})
+      .populate({ path: 'baseRoutine', select: 'name'})
+      .populate({ path: 'exercisePerformances.exercise', select: 'name sets reps weight'})
       .then((data) => {
         const status = res.statusCode;
         const count = data.length;

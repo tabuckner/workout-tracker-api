@@ -69,34 +69,6 @@
     "@types/events" "*"
     "@types/node" "*"
 
-"@types/mongoose-deep-populate@^2.0.31":
-  version "2.0.31"
-  resolved "https://registry.yarnpkg.com/@types/mongoose-deep-populate/-/mongoose-deep-populate-2.0.31.tgz#62847bee4b10a43e968ded91f6e0dd8a811c7534"
-  dependencies:
-    "@types/mongoose" "^4"
-
-"@types/mongoose-unique-validator@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@types/mongoose-unique-validator/-/mongoose-unique-validator-1.0.1.tgz#56028e5c561dc36f7ee1a1c393475f7554a7a0e7"
-  dependencies:
-    "@types/mongoose" "*"
-
-"@types/mongoose@*":
-  version "5.0.18"
-  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.0.18.tgz#4cb671e870f8312df86d734f9563a5c1b9d1ec6e"
-  dependencies:
-    "@types/events" "*"
-    "@types/mongodb" "*"
-    "@types/node" "*"
-
-"@types/mongoose@^4":
-  version "4.7.37"
-  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-4.7.37.tgz#4913464e9a80853d254cd95eceaf45e0a649a5ef"
-  dependencies:
-    "@types/events" "*"
-    "@types/mongodb" "*"
-    "@types/node" "*"
-
 "@types/mongoose@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.2.0.tgz#70c70e46bebd59e2c84d5ff2df030ebecedde922"
@@ -2386,9 +2358,9 @@ type-is@~1.6.15, type-is@~1.6.16:
     media-typer "0.3.0"
     mime-types "~2.1.18"
 
-typescript@^2.9.2:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
+typescript@2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.1.tgz#fdb19d2c67a15d11995fd15640e373e09ab09961"
 
 undefsafe@^2.0.2:
   version "2.0.2"
