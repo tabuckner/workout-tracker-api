@@ -6,11 +6,13 @@ let journalEntrySchema: mongoose.Schema = new mongoose.Schema({
   exercisePerformances: [
     {
       exercise: { type: mongoose.Schema.Types.ObjectId, ref: 'Exercise' },
-      performance: {
-        sets: { type: Number, required: true },
-        reps: { type: Number, required: true },
-        weight: { type: Number, required: true },
-      }
+      performance: [
+        {
+          set: { type: Number, required: true },
+          reps: { type: Number, required: true },
+          weight: { type: Number, required: true },
+        }
+      ]
     }
   ],
   creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }

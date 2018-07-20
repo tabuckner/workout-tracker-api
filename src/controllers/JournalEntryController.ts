@@ -126,22 +126,22 @@ class JournalEntryRouter {
       });
   }
 
-  public deleteExercise(req: IRequestAuth, res: Response, next: NextFunction): void {
+  public deleteJournalEntry(req: IRequestAuth, res: Response, next: NextFunction): void {
     const id = req.params.id;
     const requestor = req.userData.userId
-    Exercise.findOneAndRemove({ _id: id, creator: requestor })
+    JournalEntry.findOneAndRemove({ _id: id, creator: requestor })
       .then((data) => {
         let status = res.statusCode;
         if (!data) {
           status = 404;
           return res.json({
-            message: `No exercise found for id: '${id}'`,
+            message: `No Journal Entry found for id: '${id}'`,
             status,
             data
           });
         }
         res.json({
-          message: 'Exercise deleted successfully.',
+          message: 'Journal Entry deleted successfully.',
           status,
           data
         });
@@ -149,7 +149,7 @@ class JournalEntryRouter {
       .catch((err) => {
         const status = res.statusCode;
         res.json({
-          message: 'Exercise failed to delete.',
+          message: 'Journal Entry failed to delete.',
           status,
           err
         });
@@ -161,7 +161,7 @@ class JournalEntryRouter {
     this.router.post('/', checkAuth, this.createJournalEntry);
     this.router.get('/:id', this.getJournalEntry);
     // this.router.put('/:id', checkAuth, this.updateExercise);
-    // this.router.delete('/:id', checkAuth, this.deleteExercise);
+    this.router.delete('/:id', checkAuth, this.deleteJournalEntry);
   }
 
 }
